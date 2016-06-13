@@ -9,7 +9,18 @@ var Config = {
     name: "自动登录",
     description: "爬虫登录",
     version: "0.1.0",
-
+    cookie_prefix:"_fmm_autologin",
+    redis :{
+        host: "127.0.0.1",
+        port: 6379,
+        db: 1 //Database index to use
+    },
+    session: {
+        secret: 'shadower',
+        resave:true,
+        saveUninitialized:true,
+        cookie:{secure: true,maxAge:60*60*24*1000,"httpOnly":true,"path":"/"}
+    },
     log4js: {
         "category": "console",
         //"category": "logInfo",

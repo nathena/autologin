@@ -4,9 +4,7 @@
 
 var uri = require("url");
 var request = require("request");
-var cheerio = require("cheerio");
-var uuid = require("../lib/UUID");
-var db = require("../lib/Mysqlc").createDb(Config.db_mysqlConfig);
+var storeCookie = require("./common").storeCookie;
 
 var reqheaders = {}
 reqheaders["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:46.0) Gecko/20100101 Firefox/46.0";
@@ -21,23 +19,15 @@ var url = "http://www.xiaoyu.com/login";
 
 module.exports = function(router){
 
-    router.get("/xmfish",function(req,res){
-        res.render("xmfish.html",{baseurl:"/test",uid:req.query["uid"]})
+    router.get("/xmfish/:uid",function(req,res){
+        console.log(" ===> ",req.session._csrf,"  ",req.csrfToken(),"  ",req["_baseurl"]);
+        req.session["_uid"] = req.params["uid"];
+        res.render("xmfish.html",{baseurl:"/test",_csrf:req.csrfToken()})
     })
 
-    router.post("/xmfish",function(req,res){
+    router.post("/xmfish/:uid",function(req,res,next){
 
-        /**
-         * jumpurl	http://www.xmfish.com/
-         loginurl	http://bbs.xmfish.com/login.php
-         action	bbs
-         bbs_id	63
-         username	1111
-         password	1111
-         */
-
-        var uid = req.body["uid"]
-
+        var uid = req.session["_uid"];
         var data = {};
         data["username"] = req.body["username"];
         data["password"] = req.body["password"];
@@ -48,19 +38,16 @@ module.exports = function(router){
 
         request.post({url:url,form:data,headers:reqheaders,followAllRedirects:true},function(err,response,body){
             if( err ){
-                return res.send(err);
+                return next(err);
             }
-
             var re = /url:'(\S+)'/img;
             var r = "";
             while(r = re.exec(body)){
                 sso.push(r[1]);
             }
-
             if( sso.length == 0 ){
                 return res.send("登录失败")
             }
-
             set_cookies[uri.parse(url)["host"]] = response.headers["set-cookie"];
             sso_request(sso[sso_index]);
         })
@@ -70,32 +57,13 @@ module.exports = function(router){
                 set_cookies[uri.parse(url)["host"]] = response.headers["set-cookie"];
                 sso_index++;
                 if( sso.length == sso_index){
-                    store_cookies();
+                    return storeCookie(uid,"xmfish",set_cookies,function(){
+                        res.send("登录成功");
+                    });
                 }else{
-                    console.log(" sso_index => ",sso_index);
                     sso_request(sso[sso_index]);
                 }
             })
-        }
-
-        function store_cookies(){
-            //后台自动
-            var cookie = null;
-            Object.keys(set_cookies).forEach(function(key){
-                set_cookies[key].forEach(function(_cookie){
-                    cookie = {}
-                    cookie["id"] = uuid.uuid();
-                    cookie["site"] = "xmfish";
-                    cookie["state"] = 1;
-                    cookie["host"] = key;
-                    cookie["cookie"] = _cookie;
-
-                    db.insert("t_proxy_cookie",cookie).then(function(dbStatement){
-                        dbStatement.dbConnection.release();
-                    });
-                })
-            })
-            res.send("登录成功");
         }
     })
 
