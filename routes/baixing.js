@@ -59,8 +59,6 @@ module.exports = function(router){
 
             set_cookies = base.addCookies(set_cookies,url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
 
-            console.log(set_cookies);
-
             return base.storeCookie(uid,"baixing",set_cookies,function(){
                 console.log(body);
                 res.send("登录成功");

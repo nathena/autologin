@@ -5,6 +5,7 @@ module.exports = function(router){
     require("./s917")(router);
     require("./anjuke")(router);
     require("./baixing")(router);
+    require("./fang")(router);
 
     return router;
 };

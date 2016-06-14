@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录房天下</title>
+</head>
+<body>
+<form action="" method="post" autocomplete="off">
+<table>
+    <tr>
+        <td>手机</td>
+        <td><input type="text" name="username" /></td>
+    </tr>
+    <tr>
+        <td>验证码️</td>
+        <td>
+            <input type="password" name="password" />
+            <input type="hidden" name="_csrf" value="<%=_csrf;%>">
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="submit" value="登录">️</td>
+    </tr>
+</table>
+</form>
+</body>
+</html>
