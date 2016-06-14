@@ -16,8 +16,6 @@
         <td>
             <input type="password" name="password" />
             <input type="hidden" name="_csrf" value="<%=_csrf;%>">
-            <input type="text" name="txtAuthCode" size="4"/>
-            <img src="<%=baseurl;%>/s917/cap?1111" onclick="changeauthcode(this)"/>
         </td>
     </tr>
     <tr>
@@ -25,11 +23,5 @@
     </tr>
 </table>
 </form>
-<script type="text/javascript">
-    function changeauthcode(cap){
-        cap.src='<%=baseurl;%>/s917/cap?'+Math.random();
-        return false;
-    }
-</script>
 </body>
 </html>
