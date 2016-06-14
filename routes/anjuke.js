@@ -16,7 +16,7 @@ module.exports = function(router){
 
     router.get("/anjuke/:uid",function(req,res){
         req.session["_uid"] = req.params["uid"];
-        res.render("anjuke.html",{baseurl:"/test",_csrf:req.csrfToken()})
+        res.render("anjuke.html",{baseurl:req["_baseurl"],_csrf:req.csrfToken()})
     })
 
     router.post("/anjuke/:uid",function(req,res,next){
@@ -31,7 +31,6 @@ module.exports = function(router){
         data["captcha"] = "";
 
         loginApi = util.format(loginApi,querystring.stringify(data));
-        console.log(" anjuke login url => "+url);
 
         var set_cookies = {};
         request.get({url:loginApi,headers:reqheaders},function(err,response,body){
@@ -39,8 +38,8 @@ module.exports = function(router){
                 return next(err);
             }
 
-            set_cookies[url] = base.parserCookiejar(reqheaders,response.headers["set-cookie"]);
-            return base.storeCookie(uid,"s917",set_cookies,function(){
+            set_cookies = base.addCookies(set_cookies,url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
+            return base.storeCookie(uid,"anjuke",set_cookies,function(){
                 res.send(body);
             });
         })

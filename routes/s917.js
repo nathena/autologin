@@ -21,16 +21,16 @@ module.exports = function(router){
 
     router.get("/s917/:uid",function(req,res){
         var reqheaders = base.getReqHeaders();
+        req.session["_uid"] = req.params["uid"];
 
         request.get({url:url,headers:reqheaders},function(err,response,body){
 
             var set_cookies = {};
-            set_cookies[url] = base.parserCookiejar(reqheaders,response.headers["set-cookie"]);
+            set_cookies = base.addCookies(set_cookies,url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
 
             req.session["set_cookies"] = set_cookies;
             req.session["reqheaders"] = reqheaders;
 
-            req.session["_uid"] = req.params["uid"];
             res.render("s917.html",{baseurl:req["_baseurl"],_csrf:req.csrfToken()});
         })
     })
@@ -57,7 +57,7 @@ module.exports = function(router){
             }
 
             var set_cookies = req.session["set_cookies"] || {};
-            set_cookies[loginApi] = base.parserCookiejar(reqheaders,response.headers["set-cookie"]);
+            set_cookies = base.addCookies(set_cookies,loginApi,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
             return base.storeCookie(uid,"s917",set_cookies,function(){
                 res.send(body);
             });

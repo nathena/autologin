@@ -6,6 +6,17 @@ var cookiejar = require("cookiejar");
 var parserUrl = require("url");
 var db = require("../lib/Mysqlc").createDb(Config.db_mysqlConfig);
 
+exports.addCookies = function(cookies,key,cookiejars){
+    var cookie = cookies[key] || {};
+    Object.keys(cookiejars).forEach(function(_cookiestr){
+        cookie[_cookiestr] = cookiejars[_cookiestr];
+    })
+
+    cookies[key] = cookie;
+
+    return cookies;
+}
+
 exports.parserCookiejar = function(reqheader,set_cookie){
     var cookies = [],cookiejars = {};
     if( reqheader["Cookie"] ){

@@ -12,7 +12,7 @@ module.exports = function(router){
 
     router.get("/xmfish/:uid",function(req,res){
         req.session["_uid"] = req.params["uid"];
-        res.render("xmfish.html",{baseurl:"/test",_csrf:req.csrfToken()})
+        res.render("xmfish.html",{baseurl:req["_baseurl"],_csrf:req.csrfToken()})
     })
 
     router.post("/xmfish/:uid",function(req,res,next){
@@ -41,7 +41,7 @@ module.exports = function(router){
                 return res.send("登录失败")
             }
 
-            set_cookies[url] = base.parserCookiejar(reqheaders,response.headers["set-cookie"]);
+            set_cookies = base.addCookies(set_cookies,url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
             sso_request(sso[sso_index]);
         })
 
@@ -50,7 +50,7 @@ module.exports = function(router){
                 if( err ){
                     return next(err);
                 }
-                set_cookies[url] = base.parserCookiejar(reqheaders,response.headers["set-cookie"]);;
+                set_cookies = base.addCookies(set_cookies,url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
                 sso_index++;
                 if( sso.length == sso_index){
                     return base.storeCookie(uid,"xmfish",set_cookies,function(){
