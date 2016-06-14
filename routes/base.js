@@ -11,9 +11,7 @@ exports.addCookies = function(cookies,key,cookiejars){
     Object.keys(cookiejars).forEach(function(_cookiestr){
         cookie[_cookiestr] = cookiejars[_cookiestr];
     })
-
     cookies[key] = cookie;
-
     return cookies;
 }
 
@@ -27,17 +25,16 @@ exports.parserCookiejar = function(reqheader,set_cookie){
         set_cookie.forEach(function(_cookiestr){
             cookie = cookiejar.Cookie(_cookiestr);
             cookies.push(cookie.toValueString());
-
             cookiejars[_cookiestr] = cookie.toValueString();
         })
-    }else{
+    }else if(set_cookie){
         cookie = cookiejar.Cookie(set_cookie);
         cookies.push(cookie.toValueString());
-
         cookiejars[set_cookie] = cookie.toValueString();
     }
-    reqheader["Cookie"] = cookies.join("; ");
-
+    if( cookies.length > 0 ){
+        reqheader["Cookie"] = cookies.join("; ");
+    }
     return cookiejars;
 }
 
@@ -78,7 +75,7 @@ exports.storeCookie = function(uid,site,set_cookies,callback){
     })
 
     var _dbStatement = null;
-    db.del("t_proxy_cookie",{"site":site}).then(function(dbStatement){
+    db.del("t_proxy_cookie",{uid:uid,"site":site}).then(function(dbStatement){
         _dbStatement = dbStatement;
         dbStatement.inserts("t_proxy_cookie",cookies).then(function(dbStatement){
             _dbStatement = dbStatement;

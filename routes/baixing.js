@@ -23,8 +23,7 @@ module.exports = function(router){
 
         request.get({url:url,headers:reqheaders},function(err,response,body){
 
-            var set_cookies = {};
-            set_cookies[url] = base.parserCookiejar(reqheaders,response.headers["set-cookie"]);
+            var set_cookies = base.addCookies({},url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
 
             req.session["set_cookies"] = set_cookies;
             req.session["reqheaders"] = reqheaders;

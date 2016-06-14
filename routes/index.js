@@ -6,6 +6,7 @@ module.exports = function(router){
     require("./anjuke")(router);
     require("./baixing")(router);
     require("./fang")(router);
+    require("./ganji")(router);
 
     return router;
 };

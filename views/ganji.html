@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>登录百姓网</title>
+    <title>登录赶集网</title>
 </head>
 <body>
 <form action="" method="post" autocomplete="off">
@@ -16,6 +16,8 @@
         <td>
             <input type="password" name="password" />
             <input type="hidden" name="_csrf" value="<%=_csrf;%>">
+            <input type="text" name="txtAuthCode" size="4"/>
+            <img src="<%=baseurl;%>/ganji/cap?1111" onclick="changeauthcode(this)"/>
         </td>
     </tr>
     <tr>
@@ -23,5 +25,11 @@
     </tr>
 </table>
 </form>
+<script type="text/javascript">
+    function changeauthcode(cap){
+        cap.src='<%=baseurl;%>/ganji/cap?'+Math.random();
+        return false;
+    }
+</script>
 </body>
 </html>
