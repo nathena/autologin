@@ -39,9 +39,9 @@ module.exports = function(router){
         data["checkCode"] =req.body["txtAuthCode"];
         data["setcookie"] = "14";
 
-        loginApi = util.format(loginApi,querystring.stringify(data));
+        var _loginApi = util.format(loginApi,querystring.stringify(data));
         var set_cookies = req.session["set_cookies"] || {};
-        request.get({url:loginApi,headers:reqheaders},function(err,response,body){
+        request.get({url:_loginApi,headers:reqheaders},function(err,response,body){
             if( err ){
                 return next(err);
             }

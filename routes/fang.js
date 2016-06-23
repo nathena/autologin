@@ -19,8 +19,6 @@ module.exports = function(router){
 
     router.post("/fang/:uid",function(req,res){
 
-        req.session["_uid"] = req.params["uid"];
-
         var reqheaders = req.session["reqheaders"] || base.getReqHeaders();
         reqheaders["Referer"] = "https://passport.fang.com";
 

@@ -7,6 +7,7 @@ module.exports = function(router){
     require("./baixing")(router);
     require("./fang")(router);
     require("./ganji")(router);
+    require("./s58")(router);
 
     return router;
 };

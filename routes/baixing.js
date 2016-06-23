@@ -3,7 +3,6 @@
  */
 
 var uri = require("url");
-var util = require("util");
 var querystring = require("querystring")
 var request = require("request");
 var base = require("./base");
@@ -50,14 +49,11 @@ module.exports = function(router){
         data["password"] = req.body["password"];
 
         var set_cookies = req.session["set_cookies"] || {};
-
         request.post({url:loginApi,form:data,headers:reqheaders},function(err,response,body){
             if( err ){
                 return next(err);
             }
-
             set_cookies = base.addCookies(set_cookies,url,base.parserCookiejar(reqheaders,response.headers["set-cookie"]));
-
             return base.storeCookie(uid,"baixing",set_cookies,function(){
                 console.log(body);
                 res.send("登录成功");
